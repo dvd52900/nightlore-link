@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NightLore on YouTube</title>
+<meta name="description" content="Animated survival stories. Tap to open NightLore in the YouTube app.">
+<meta name="theme-color" content="#0f0f0f">
+<!-- Link previews: crawlers don't run JavaScript, so edit these by hand (not in CONFIG). -->
+<!-- Replace YOUR-DOMAIN with your GitHub Pages address or custom domain, and add a 1200x630 preview.jpg next to this file. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NightLore">
+<meta property="og:title" content="NightLore on YouTube">
+<meta property="og:description" content="Animated survival stories. Tap to open in the YouTube app.">
+<meta property="og:url" content="https://YOUR-DOMAIN/">
+<meta property="og:image" content="https://YOUR-DOMAIN/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NightLore on YouTube">
+<meta name="twitter:description" content="Animated survival stories. Tap to open in the YouTube app.">
+<meta name="twitter:image" content="https://YOUR-DOMAIN/preview.jpg">
+<style>
+  :root { --bg: #0f0f0f; --text: #f1f1f1; --muted: #aaaaaa; --button: #ff0000; --button-text: #ffffff; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Hebrew", Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  }
+  main { width: 100%; max-width: 420px; text-align: center; }
+  h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+  p { color: var(--muted); margin: 0 0 2rem; }
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: .6rem;
+    width: 100%; min-height: 60px; padding: 1rem 1.25rem; border-radius: 14px;
+    background: var(--button); color: var(--button-text);
+    font-size: 1.2rem; font-weight: 700; text-decoration: none;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; }
+  .btn svg { flex: none; }
+  .link { display: inline-block; margin-top: 1.5rem; padding: .5rem; color: var(--muted); font-size: .95rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title">NightLore</h1>
+  <p id="subtitle" dir="auto">Opening YouTube…</p>
+  <a id="open" class="btn" href="https://www.youtube.com/channel/UCkIvxSIlYwjOVqtQ6bXMAAg">
+    <svg width="28" height="20" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="6" fill="currentColor" opacity=".25"/><path d="M11 5.5v9l8-4.5z" fill="currentColor"/></svg>
+    <span id="open-label" dir="auto">Open in YouTube</span>
+  </a>
+  <a id="web" class="link" dir="auto" href="https://www.youtube.com/channel/UCkIvxSIlYwjOVqtQ6bXMAAg">Open in browser</a>
+</main>
+<script>
+// ===== Edit here =====
+const CONFIG = {
+  channelId: 'UCkIvxSIlYwjOVqtQ6bXMAAg',
+  pageTitle: 'NightLore',
+  subtitle: 'Opening YouTube…',     // e.g. 'פותח את יוטיוב…'
+  openLabel: 'Open in YouTube',     // e.g. 'פתח ביוטיוב'
+  browserLabel: 'Open in browser',  // e.g. 'פתח בדפדפן'
+  lang: 'en',                       // 'he' for Hebrew; the labels flip to RTL by themselves (dir="auto")
+  colors: { bg: '#0f0f0f', text: '#f1f1f1', muted: '#aaaaaa', button: '#ff0000', buttonText: '#ffffff' },
+  iosFallbackMs: 1500,              // after a tap on iPhone: if the app hasn't opened by then, go to the website
+};
+// =====================
+
+// The links for this visit. ?v=VIDEO_ID opens one video; anything that isn't an 11-character YouTube ID is ignored.
+function links(channelId, v) {
+  const videoId = /^[A-Za-z0-9_-]{11}$/.test(v || '') ? v : null;
+  const path = videoId ? 'watch?v=' + videoId : 'channel/' + channelId;
+  const web = 'https://www.youtube.com/' + path;
+  return {
+    web,
+    ios: videoId ? 'youtube://watch?v=' + videoId : 'youtube://www.youtube.com/channel/' + channelId,
+    android: 'intent://www.youtube.com/' + path +
+      '#Intent;scheme=https;package=com.google.android.youtube;S.browser_fallback_url=' + encodeURIComponent(web) + ';end',
+  };
+}
+
+const ua = navigator.userAgent;
+const isAndroid = /Android/i.test(ua);
+const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPadOS says "Mac"
+const L = links(CONFIG.channelId, new URLSearchParams(location.search).get('v'));
+const appUrl = isAndroid ? L.android : isIOS ? L.ios : L.web;
+
+// Fill the page from CONFIG.
+const root = document.documentElement, c = CONFIG.colors;
+root.lang = CONFIG.lang;
+[['--bg', c.bg], ['--text', c.text], ['--muted', c.muted], ['--button', c.button], ['--button-text', c.buttonText]].forEach(([k, v]) => root.style.setProperty(k, v));
+document.title = CONFIG.pageTitle + ' on YouTube';
+document.getElementById('title').textContent = CONFIG.pageTitle;
+document.getElementById('subtitle').textContent = CONFIG.subtitle;
+document.getElementById('open-label').textContent = CONFIG.openLabel;
+const openBtn = document.getElementById('open'), webLink = document.getElementById('web');
+openBtn.href = appUrl;          // a real link: in-app browsers trust a tap on a link more than a script
+webLink.href = L.web;
+webLink.textContent = CONFIG.browserLabel;
+
+// If the app opens, this page is hidden: cancel the iPhone fallback.
+let fallbackTimer = 0;
+const cancelFallback = () => clearTimeout(fallbackTimer);
+document.addEventListener('visibilitychange', () => { if (document.hidden) cancelFallback(); });
+window.addEventListener('pagehide', cancelFallback);
+
+function track(kind) {
+  // Click counter hook (off for now). One request, no cookies, for example:
+  // navigator.sendBeacon('https://YOUR-COUNTER.example/hit?kind=' + kind + '&path=' + encodeURIComponent(L.web));
+}
+
+// Tap on the big button: the link opens the app; on iPhone, fall back to the website if nothing happened.
+openBtn.addEventListener('click', () => {
+  track('tap');
+  if (isIOS) {
+    cancelFallback();
+    fallbackTimer = setTimeout(() => { if (!document.hidden) location.href = L.web; }, CONFIG.iosFallbackMs);
+  }
+});
+webLink.addEventListener('click', () => track('browser'));
+
+// On arrival: computers go straight to YouTube; phones try the app once. If an in-app browser blocks that,
+// the page simply stays here with the button (an automatic jump to the website would hide the button).
+track('visit');
+if (!isAndroid && !isIOS) location.replace(L.web);
+else location.href = appUrl;
+</script>
+<noscript><p style="text-align:center"><a href="https://www.youtube.com/channel/UCkIvxSIlYwjOVqtQ6bXMAAg" style="color:#fff">Open NightLore on YouTube</a></p></noscript>
+</body>
+</html>
