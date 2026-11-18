@@ -3,6 +3,8 @@
 A free replacement for LinkTwin: one static `index.html` (no build, no dependencies). Someone taps your link inside Instagram, TikTok or
 Facebook, and the page opens the **YouTube app** instead of YouTube inside the in-app browser.
 
+**Live:** https://dvd52900.github.io/nightlore-link/ (one video: `https://dvd52900.github.io/nightlore-link/?v=VIDEO_ID`).
+
 - **Android:** an `intent://` link aimed at the YouTube app (`com.google.android.youtube`). If the app isn't installed, it falls back
   to the normal web page.
 - **iPhone / iPad:** tries `youtube://`. After a tap, if the app hasn't opened within ~1.5 s, it falls back to the web page.
@@ -36,7 +38,7 @@ The text turns right-to-left by itself.
 **Link preview (title, description, picture):** these are the `og:` and `twitter:` lines in `<head>`. Instagram, Facebook and WhatsApp
 read them without running JavaScript, so they are edited by hand, not in CONFIG.
 1. Replace `YOUR-DOMAIN` with your address.
-2. Add a 1200x630 picture named `preview.jpg` next to `index.html`.
+2. `preview.jpg` (1200x630, the logo + the button) is the picture; swap it for another 1200x630 image any time.
 
 **Click counter (later):** the `track()` function has a commented example line. Nothing is tracked now.
 
